@@ -148,15 +148,31 @@ Then on GitHub:
 
 ### 2d. Watch it run
 
-Scroll down on your PR to the checks box. **CI / test** goes 🟡 (running), then ✅ (passed) in about 30–60 seconds.
+Scroll down on your PR to the checks box. **CI / test** goes 🟡 (running), then ✅ (passed) in about 30–60 seconds. Don't see it yet? Wait 30 seconds and refresh the page.
 
-Click **Details** to see every step: checkout → set up Python → install → run tests. Click a step to expand its log.
+To see the log, click the ✅ (or open the **Checks** tab at the top of your PR). You'll see every step: checkout → set up Python → install → run tests. Click a step to expand it.
 
-✅ **Goal: a green check on your PR.**
+✅ **Goal: a green check on your PR.** Don't merge it yet!
 
 ---
 
-## Step 3: Prove it works (5–10 min)
+## Step 3: Protect `main` (3 min)
+
+Right now, anyone could still click **Merge** on a PR with a red ❌. Let's make GitHub **block** merging until CI passes.
+
+1. In **your** repo, go to **Settings → Branches → Add classic branch protection rule**
+2. **Branch name pattern:** `main`
+3. ☑ **Require a pull request before merging**
+   - Uncheck **Require approvals** (there's no one to approve today)
+4. ☑ **Require status checks to pass before merging**
+   - In the search box, type **`test`** and select it (that's the job name from your `ci.yml`)
+   - It only appears after CI has run at least once, which you just did in Step 2
+5. ☑ **Do not allow bypassing the above settings** (otherwise you, as the owner, can still merge a red PR)
+6. Click **Create**
+
+---
+
+## Step 4: Prove it works (5–10 min)
 
 A pipeline is only useful if it catches bugs. Time to test it.
 
@@ -169,17 +185,17 @@ A pipeline is only useful if it catches bugs. Time to test it.
    ```
 4. **Swap back** and watch your PR. It re-runs automatically.
 
-| Result   | Meaning                      | What to do                                                                                          |
-| -------- | ---------------------------- | --------------------------------------------------------------------------------------------------- |
-| ❌ Red   | Your pipeline caught the bug | Click **Details** to find which test failed. Fix the bug, push, and get green again                 |
-| ✅ Green | The bug got past your tests  | Write a new test that catches it, push, and confirm it's red. Then fix the bug, push, and get green |
+| Result   | Meaning                      | What to do                                                                                                        |
+| -------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| ❌ Red   | Your pipeline caught the bug | Notice the **Merge** button is blocked 🔒. Click the red ❌ to find which test failed. Fix the bug, push, and get green again |
+| ✅ Green | The bug got past your tests  | Write a new test that catches it, push, and confirm it's red. Then fix the bug, push, and get green               |
 
 ---
 
-## Step 4: Merge it 🚀
+## Step 5: Merge it 🚀
 
-Once your PR is green, click **Merge pull request**.
+Once your PR is green, the **Merge pull request** button unlocks. Click it.
 
 Your workflow also triggers on `push` to `main`, so the merge starts one more run. Open the **Actions** tab to see it under **CI**.
 
-🎉 **Done!** Your repo now has a working CI pipeline. Every future PR gets tested automatically, just like your BUILD project should.
+🎉 **Done!** Your repo now has a working CI pipeline **and** a protected `main` branch. Every future PR gets tested automatically, and nothing broken can be merged, just like your BUILD project should work.
